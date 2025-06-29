@@ -48,7 +48,7 @@ class ClassTinyLlama():
             }
         ]
         prompt = self.model.tokenizer.apply_chat_template(payload, tokenize=False, add_generation_prompt=True)
-        execution = self.model(prompt, max_new_tokens=256, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+        execution = self.model(prompt, max_new_tokens=128, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
         delimiter = "<|assistant|>"
         separate_text = execution[0].get("generated_text").split(delimiter)
         assistant_response = separate_text[1].strip()
