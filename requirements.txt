@@ -1,4 +1,6 @@
+
 absl-py==2.3.0
+accelerate==1.8.1
 astunparse==1.6.3
 blinker==1.9.0
 certifi==2025.6.15
@@ -46,6 +48,7 @@ opt_einsum==3.4.0
 optree==0.16.0
 packaging==25.0
 protobuf==5.29.5
+psutil==7.0.0
 Pygments==2.19.2
 PyYAML==6.0.2
 regex==2024.11.6
