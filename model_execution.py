@@ -1,10 +1,10 @@
 import torch
-from transformers import pipeline
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 
 model_language_detection = pipeline("text-classification", model="papluca/xlm-roberta-base-language-detection")
 model_toenglish_translation = pipeline("translation", model="Helsinki-NLP/opus-mt-es-en")
 model_tospanish_translation = pipeline("translation", model="Helsinki-NLP/opus-mt-en-es")
-model_tiny_llm = pipeline("text-generation", model="TinyLlama/TinyLlama-1.1B-Chat-v1.0", torch_dtype=torch.bfloat16, device_map="auto")
+model_tiny_llm = AutoModelForCausalLM.from_pretrained("Qwen/Qwen1.5-4B-Chat", torch_dtype="auto", device_map="auto")
 
 class ClassXlmRoberta():
     def __init__(self, top_getter: int = 1):
@@ -32,9 +32,10 @@ class ClassToSpanish():
         execution = self.model(text)
         return execution
 
-class ClassTinyLlama():
+class ClassTinyLLM():
     def __init__(self):
         self.model = model_tiny_llm
+        self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen1.5-4B-Chat")
 
     def chat(self, context: str, text: str):
         payload = [
@@ -47,9 +48,9 @@ class ClassTinyLlama():
                 "content": text
             }
         ]
-        prompt = self.model.tokenizer.apply_chat_template(payload, tokenize=False, add_generation_prompt=True)
-        execution = self.model(prompt, max_new_tokens=128, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
-        delimiter = "<|assistant|>"
-        separate_text = execution[0].get("generated_text").split(delimiter)
-        assistant_response = separate_text[1].strip()
-        return assistant_response
+        text = self.tokenizer.apply_chat_template(payload, tokenize=False, add_generation_prompt=True)
+        model_inputs = self.tokenizer([text], return_tensors="pt").to("cpu")
+        generated_ids = self.model.generate(model_inputs.input_ids, max_new_tokens=256)
+        generated_ids = [output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)]
+        response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+        return response

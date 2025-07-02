@@ -1,5 +1,5 @@
 from flask import Flask, request
-from model_execution import ClassXlmRoberta, ClassToEnglish, ClassToSpanish, ClassTinyLlama
+from model_execution import ClassXlmRoberta, ClassToEnglish, ClassToSpanish, ClassTinyLLM
 app = Flask(__name__)
 
 # MODELS
@@ -18,7 +18,7 @@ models = [
     },
     {
         "type": "chatbot",
-        "name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        "name": "Qwen/Qwen1.5-4B-Chat"
     }
 ]
 
@@ -39,8 +39,8 @@ def execute_model():
     elif model_selected == "Helsinki-NLP/opus-mt-en-es":
         model = ClassToSpanish()
         return model.translate_text(user_text), 200
-    elif model_selected == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
-        model = ClassTinyLlama()
+    elif model_selected == "Qwen/Qwen1.5-4B-Chat":
+        model = ClassTinyLLM()
         context = data.get("context")
         return model.chat(context, user_text), 200
     else:
