@@ -1,3 +1,11 @@
 /.venv/
 .idea/
 /.idea/
+/.idea/inspectionProfiles/
+/.idea/.gitignore
+/.idea/lm-models-personal-api.iml
+/.idea/material_theme_project_new.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
